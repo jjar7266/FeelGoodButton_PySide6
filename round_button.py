@@ -5,13 +5,11 @@
 # Coded by Jose "Joe" Ruiz
 # ===========================================================
 
-# First, we import the PySide6 tools we need.
+# Import the PySide6 tools we need.
 # QPushButton is the normal button class.
 # QPainter helps us draw shapes (like circles!).
 # QColor lets us pick colors.
-# Qt gives us alignment and mouse button info.
-
-# Import modules
+# Qt gives us alignment flags, mouse buttons, cursor shapes, etc.
 
 from PySide6.QtWidgets import QPushButton
 from PySide6.QtGui import QPainter, QBrush, QPen, QColor
@@ -21,7 +19,14 @@ from PySide6.QtCore import Qt, QRectF
 # ============================================================
 # RoundButton Class
 # This class creates a BUTTON that is ROUND instead of square.
-# We will draw it ourselves using QPainter.
+# We draw it ourselves using QPainter.
+#
+# NEW FEATURES:
+#   ✔ Custom color support (bright red, blue, anything!)
+#   ✔ Automatic hover color (lighter)
+#   ✔ Automatic press color (darker)
+#   ✔ All Qt6 enums fully qualified (VSCode‑safe)
+#   ✔ Fully commented for beginners
 # ============================================================
 
 class RoundButton(QPushButton):
@@ -30,12 +35,21 @@ class RoundButton(QPushButton):
     or click it. Perfect for our FeelGoodButton project!
     """
 
-    def __init__(self, text="Feel Good", parent=None):
-        # Call the QPushBUtton constructor so it sets itself up.
+    def __init__(self, text="Feel Good", color="#ff0000", parent=None):
+        """
+        NEW: Added a 'color' parameter so the user can choose
+        any button color they want. Default is bright red (#ff0000).
+        """
+
+        # Call the QPushButton constructor so it sets itself up.
         super().__init__(text, parent)
 
-        # Make the mouse cursor turn into a pointing hand
-        # so it feels like a real clickable button.
+        # Save the chosen base color
+        self.base_color = QColor(color)
+
+        # Make the mouse cursor turn into a pointing hand.
+        # Qt6 requires the explicit enum namespace:
+        # Qt.CursorShape.PointingHandCursor
         self.setCursor(Qt.CursorShape.PointingHandCursor)
 
         # These booleans help us know what the mouse is doing.
@@ -44,12 +58,15 @@ class RoundButton(QPushButton):
 
         # ---------------------------------------------------------
         # COLORS!
-        # These are the colors our button will use.
-        # You can change them to anything you like.
+        # Instead of hard-coding green, we now generate colors
+        # based on the user's chosen base color.
+        #
+        # QColor.lighter(120) makes the color 20% lighter.
+        # QColor.darker(120) makes the color 20% darker.
         # ---------------------------------------------------------
-        self.normal_color = QColor("#4CAF50")     # Regular green
-        self.hover_color  = QColor("#66BB6A")     # Lighter green
-        self.press_color  = QColor("#388E3C")     # Darker green
+        self.normal_color = self.base_color
+        self.hover_color  = self.base_color.lighter(120)
+        self.press_color  = self.base_color.darker(120)
         self.text_color   = QColor("#FFFFFF")     # White text
 
         # Remove the default button border and background
@@ -76,6 +93,7 @@ class RoundButton(QPushButton):
 
     def mousePressEvent(self, event):
         # Mouse clicked the button
+        # Qt6 explicit enum: Qt.MouseButton.LeftButton
         if event.button() == Qt.MouseButton.LeftButton:
             self._pressed = True
             self.update()
@@ -97,15 +115,15 @@ class RoundButton(QPushButton):
     def paintEvent(self, event):
         # QPainter is our "paintbrush" for drawing.
         painter = QPainter(self)
+
+        # Qt6 explicit enum: QPainter.RenderHint.Antialiasing
         painter.setRenderHint(QPainter.RenderHint.Antialiasing)
 
         # Pick the right color depending on what the mouse is doing.
         if self._pressed:
             color = self.press_color
-
         elif self._hovering:
             color = self.hover_color
-
         else:
             color = self.normal_color
 
@@ -115,10 +133,13 @@ class RoundButton(QPushButton):
 
         # Draw the circle
         painter.setBrush(QBrush(color))
-        painter.setPen(QPen(Qt.PenStyle.NoPen))  # No border line
+
+        # Qt6 explicit enum: Qt.PenStyle.NoPen
+        painter.setPen(QPen(Qt.PenStyle.NoPen))
         painter.drawEllipse(rect)
 
         # Draw the text in the center of the circle
         painter.setPen(QPen(self.text_color))
-        painter.drawText(rect, Qt.AlignmentFlag.AlignCenter, self.text())
 
+        # Qt6 explicit enum: Qt.AlignmentFlag.AlignCenter
+        painter.drawText(rect, Qt.AlignmentFlag.AlignCenter, self.text())
