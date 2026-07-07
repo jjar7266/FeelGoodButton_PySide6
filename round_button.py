@@ -9,7 +9,7 @@
 # QPushButton is the normal button class.
 # QPainter helps us draw shapes (like circles!).
 # QColor lets us pick colors.
-# Qt gives us alignment flags, mouse buttons, cursor shapes, etc.
+# Qt gives us alignment flags, mouse buttons, cursor shapes, etc
 
 from PySide6.QtWidgets import QPushButton
 from PySide6.QtGui import QPainter, QBrush, QPen, QColor
