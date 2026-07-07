@@ -39,7 +39,7 @@ This project is open‑source. Feel free to fork, modify, and build upon it.
 ---
 
 ## 👨‍💻 Author
-**Joe Jarvis**
+**Jose "Joe" Ruiz**
 Self Taught Python & GUI Developer — specializing in modern PySide6 and Tkinter desktop applications
 GitHub: [@jjar7266](https://github.com/jjar7266)
 Location: Coral Springs, FL, USA
